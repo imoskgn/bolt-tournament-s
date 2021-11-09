@@ -7,7 +7,7 @@ A place to create and manage tournaments.
 
 ## Tournmament
 ### GET
-    URL: localhost:3000/tournament/
+    URL: https://bolt-tournament-s.herokuapp.com/tournament/
 
     response:
 
@@ -157,7 +157,7 @@ A place to create and manage tournaments.
 
 ### POST : Create
 
-    URL: localhost:3000/tournament/create
+    URL: https://bolt-tournament-s.herokuapp.com/tournament/create
 
     body:
         {
