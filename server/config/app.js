@@ -1,77 +1,43 @@
-// Installed 3pp Pkgs
-let createError = require('http-errors');
-let express = require('express');
-let path = require('path');
-let cookieParser = require('cookie-parser');
-let logger = require('morgan');
+var createError = require('http-errors');
+var express = require('express');
+var path = require('path');
+var cookieParser = require('cookie-parser');
+var logger = require('morgan');
 
-// Modules for authentication
-let session = require('express-session');
-let passport = require('passport');
-let passportLocal = require('passport-local');
-let localStrategy = passportLocal.Strategy;
-let flash = require('connect-flash')
-
-// Database setup
+// database setup
 let mongoose = require('mongoose');
-let DB = require('./db');
+let DB = require('./db')
 
-// Point moongos to the DB URI
-mongoose.connect(process.env.URI || DB.URI, {useNewUrlParser: true, useUnifiedTopology:true});
-
-let mongoDB = mongoose.connection
-mongoDB.on('error', console.error.bind(console, 'Connection error: '));
+// connect mongoose 
+mongoose.connect(DB.URI, {useNewUrlParser: true, useUnifiedTopology: true})
+let mongoDB = mongoose.connection;
+mongoDB.on('error', console.error.bind(console, "Connection Error: "))
 mongoDB.once('open', ()=>{
-  console.log('Connected to MongoDB...');
-});
+  console.log('Connected to mongodb ...')
+})
 
-let indexRouter = require('../routes/index');
-let usersRouter = require('../routes/users');
 
-// Create an instance and store it in app
-let app = express();
+// add more routes here
+var tournamentRouter = require('../routes/tournament');
+
+
+var app = express();
 
 // view engine setup
-app.set('views', path.join(__dirname, '../views'));
+app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
-// Activators
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, '../../public')));
-app.use(express.static(path.join(__dirname, '../../node_modules')));
-
-// Setup express session
-app.use(session({
-  secret:'SomeSecret',
-  saveUninitialized:false,
-  resave:false
-}));
-
-// Initializing Flash
-app.use(flash());
-
-// Initializing Passport
-app.use(passport.initialize());
-app.use(passport.session());
-
-// Passport user config
-// Create a User model Instance
-let userModel =require('../models/user')
-let User = userModel.User;
 
 
-// Implement user auth strategy
-passport.use(User.createStrategy());
 
-// Serialize and deserialize
-passport.serializeUser(User.serializeUser());
-passport.deserializeUser(User.deserializeUser());
 
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
+app.use('/tournament', tournamentRouter);
+
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -86,7 +52,6 @@ app.use(function(err, req, res, next) {
 
   // render the error page
   res.status(err.status || 500);
-  res.render('error',{title:'Error'});
 });
 
 module.exports = app;
