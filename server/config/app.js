@@ -19,6 +19,8 @@ mongoDB.once('open', ()=>{
 
 // add more routes here
 var tournamentRouter = require('../routes/tournament');
+var matchRouter = require('../routes/match')
+var userRouter = require('../routes/user')
 
 
 var app = express();
@@ -34,8 +36,9 @@ app.use(cookieParser());
 
 
 
-
 app.use('/tournament', tournamentRouter);
+app.use('/match', matchRouter)
+app.use('/user', userRouter)
 
 
 
