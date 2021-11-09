@@ -36,7 +36,8 @@ module.exports.createNewUser = (req, res, next) => {
         "phoneNumber": req.body.phoneNumber,
         "registered": false,
         "email": "",
-        "registerAt": "0000-00-00"
+        "registerAt": "1999-01-01",
+        "password": ""
     });
 
     // Add new User to the Database

@@ -64,7 +64,8 @@ module.exports.createNewTournament = (req, res, next) => {
                         "phoneNumber": phoneNumber,
                         "registered": false,
                         "email": "",
-                        "registerAt": "1999-01-01"
+                        "registerAt": "1999-01-01",
+                        "password": ""
                     })
                     createUser(newUser).catch(e => {
                         console.log('There has been a problem: ' + e.message);

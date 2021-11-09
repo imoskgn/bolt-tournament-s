@@ -20,7 +20,8 @@ let User = mongoose.Schema(
         type: Date,
         default: Date.now,
     },
-    registerAt: Date
+    registerAt: Date,
+    password: String
 }
 );
 
