@@ -1,11 +1,9 @@
-#!/usr/bin/env node
-
 /**
  * Module dependencies.
  */
 
 var app = require('./server/config/app');
-var debug = require('debug')('server:server');
+var debug = require('debug')('portfolio:server');
 var http = require('http');
 
 /**
