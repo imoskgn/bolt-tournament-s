@@ -8,7 +8,6 @@ let Tournament = require('../models/tournament');
 /* GET Tournament list */
 module.exports.displayTournamentList = (req, res, next) => {
     Tournament.find().exec((err, tournamentList) => {
-        console.log("Tenemos informacion")
         if (err) {
             return console.error(err);
         }
@@ -18,6 +17,18 @@ module.exports.displayTournamentList = (req, res, next) => {
     });
 };
 
+/* GET Tournament by Id */
+module.exports.displayTournament = (req, res, next) => {
+    let id = req.params.id 
+    Tournament.findById(id).exec((err, tournament) => {
+        if (err) {
+            return console.error(err);
+        }
+        else {
+            res.json(tournament);
+        }
+    });
+};
 
 /* CREATE Tournament */
 module.exports.createNewTournament = (req, res, next) => {
@@ -37,10 +48,10 @@ module.exports.createNewTournament = (req, res, next) => {
 
     playersList.forEach(async (player) => {
         phoneNumber = player.phoneNumber;
-        console.log(player.phoneNumber);
         await checkUser(phoneNumber, player)
     });
 
+    /* Creating users if not exist in the database */
     async function checkUser(phoneNumber, player){
         User.find({ phoneNumber: phoneNumber }).exec((err, user) => {
             if (err) {
@@ -48,11 +59,12 @@ module.exports.createNewTournament = (req, res, next) => {
             }
             else {
                 if (!user.length) {
-                    console.log("creatiiiiing user")
                     let newUser = User({
                         "name": player.name,
                         "phoneNumber": phoneNumber,
-                        "register": false,
+                        "registered": false,
+                        "email": "",
+                        "registerAt": "1999-01-01"
                     })
                     createUser(newUser).catch(e => {
                         console.log('There has been a problem: ' + e.message);
@@ -76,7 +88,7 @@ module.exports.createNewTournament = (req, res, next) => {
     }
 
 
-    // Add new Object to the Database
+    // Add new Tournament to the Database
     Tournament.create(newTournament, (err, Order) => {
         if (err) {
             console.log(err);
@@ -87,3 +99,45 @@ module.exports.createNewTournament = (req, res, next) => {
         }
     });
 }
+
+/* UPDATE Tournament by Id*/
+module.exports.updateTournament = (req, res, next) => {
+    let id = req.params.id
+    updatedInfo = {
+        "name": req.body.name,
+        "description": req.body.description,
+        "startDate": req.body.startDate,
+        "endDate": req.body.endDate,
+        "playersList": req.body.playersList
+    }
+
+    Tournament.findByIdAndUpdate(id, updatedInfo, (err) => {
+        if(err)
+        {
+            console.log(err);
+            res.json(err);
+        }
+        else
+        {
+            res.json({ success: true, msg: 'Tournament Successfully Updated' });
+        }
+    })
+}
+
+
+
+/* Delete tournament by id */
+module.exports.deleteTournament = (req, res, next) => {
+    let id = req.params.id;
+    Tournament.remove({_id: id}, (err) => {
+        if(err)
+        {
+            console.log(err)
+        }
+        else
+        {
+            res.json({ success: true, msg: 'Tournament Successfully Deleted' });
+        }
+    })
+}
+

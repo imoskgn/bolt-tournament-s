@@ -4,9 +4,9 @@ let mongoose =  require('mongoose')
 
 //create business contact model
 let matchModel = mongoose.Schema({
-    firstPlayerId: String,
-    secondPlayerId: String,
-    winnerId: String,
+    firstPlayerPhone: String,
+    secondPlayerPhone: String,
+    winnerPhone: String,
     acive: Boolean,
     tournamentId: String,
     level: Number
