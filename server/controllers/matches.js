@@ -48,6 +48,10 @@ module.exports.displayMatch = (req, res, next) => {
 module.exports.createMatchesPerTournament = (req, res, next) => {
     let id = req.params.id;
     Tournament.findById(id, (err, tournament) => {
+        if (!tournament) {
+            return res.json({ success: false, msg: 'Tournament with id: ' + id + "not found" });
+        }
+
         if (err) {
             return console.error(err);
         }
@@ -64,6 +68,7 @@ module.exports.createMatchesPerTournament = (req, res, next) => {
                 });
                 createMatch(newMatch)
             }
+
         }
         res.json({ success: true, msg: 'Matches Succesfully Created' });
     })
