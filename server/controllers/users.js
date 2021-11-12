@@ -16,10 +16,10 @@ module.exports.displayUserList = (req, res, next) => {
     });
 };
 
-/* GET User by Id */
+/* GET User by phoneNumber */
 module.exports.displayUser = (req, res, next) => {
     let id = req.params.id 
-    User.findById(id).exec((err, user) => {
+    User.find({ phoneNumber: id }).exec((err, user) => {
         if (err) {
             return console.error(err);
         }
