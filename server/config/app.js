@@ -3,6 +3,7 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+let cors = require('cors');
 
 // database setup
 let mongoose = require('mongoose');
@@ -35,6 +36,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
 
+app.use(cors());
 
 app.use('/tournament', tournamentRouter);
 app.use('/match', matchRouter)
