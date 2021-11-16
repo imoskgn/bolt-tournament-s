@@ -17,6 +17,6 @@ router.post('/create', tournamentControllers.createNewTournament);
 router.post('/update/:id', tournamentControllers.updateTournament);
 
 /* DELETE tournament */
-router.get('/delete/:id', tournamentControllers.deleteTournament);
+router.delete('/delete/:id', tournamentControllers.deleteTournament);
 
 module.exports = router;

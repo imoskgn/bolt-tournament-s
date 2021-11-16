@@ -21,7 +21,7 @@ module.exports.displayMatches = (req, res, next) => {
 /* GET match by Tournament Id */
 module.exports.displayMatchesByTournament = (req, res, next) => {
     let id = req.params.id;
-    Match.find({ tournamentId: id }).exec((err, matchList) => {
+    Match.find({ tournamentId: id }).sort({level: 1, order: 1}).exec((err, matchList) => {
         if (err) {
             return console.error(err);
         }
@@ -44,55 +44,98 @@ module.exports.displayMatch = (req, res, next) => {
     });
 };
 
-/* CREATE Tournament */
+/* CREATE matches when the tournament start  */
 module.exports.createMatchesPerTournament = (req, res, next) => {
-    let id = req.params.id;
+    let id = req.params.tournamentId;
     Tournament.findById(id, (err, tournament) => {
+        console.log(tournament)
         if (!tournament) {
             return res.json({ success: false, msg: 'Tournament with id: ' + id + "not found" });
         }
-
+        if (tournament.status != "created"){
+            return res.json({ succres: false, msg: "Tournament have already started"})
+        }
         if (err) {
             return console.error(err);
         }
         else {
-            currentPlayersList = tournament.currentPlayersList
-            for (let i = 0; i < (currentPlayersList.length - 1); i = i + 2) {
+            playersList = tournament.playersList
+            let order = 1;
+            for (let i = 0; i < (playersList.length - 1); i = i + 2) {
                 let newMatch = Match({
-                    "firstPlayerPhone": currentPlayersList[i].phoneNumber,
-                    "secondPlayerPhone": currentPlayersList[i + 1].phoneNumber,
+                    "firstPlayer": playersList[i],
+                    "secondPlayer": playersList[i + 1],
                     "winnerPhone": "",
                     "acive": true,
                     "tournamentId": tournament._id,
-                    "level": tournament.level
+                    "level": tournament.level,
+                    "order": order
                 });
                 createMatch(newMatch)
+                order++;
             }
-
         }
-        res.json({ success: true, msg: 'Matches Succesfully Created' });
+        tournament.status = "started";
+        tournament.save();
+        return res.json({ success: true, msg: 'Matches Succesfully Created & Tournament Started' });
     })
+}
 
-    async function createMatch(newMatch) {
-        await Match.create(newMatch, (err, User) => {
+
+module.exports.createOrUpdateMatch = async (req, res, next) => {
+    let id = req.params.tournamentId;
+    let order = req.body.order
+    let level = req.body.level
+    let newMatch = {
+        "firstPlayer": req.body.firstPlayer ? req.body.firstPlayer : "",
+        "secondPlayer": req.body.secondPlayer ? req.body.secondPlayer : "",
+        "winner": "",
+        "acive": true,
+        "tournamentId": id,
+        "level": level,
+        "order": order
+    };
+    console.log(req.body.secondPlayerPhone ? req.body.secondPlayerPhone : "",)
+    Match.findOneAndUpdate(
+        {
+            tournamentId: id,
+            level: level,
+            order: order
+        }, newMatch, {upsert: true}, (err, match) => {
             if (err) {
-                console.log(err);
-                res.end(err);
+                return console.error(err);
             }
             else {
-                console.log("Match created")
+                res.json({ success: true, msg: 'Matches Succesfully Created' });
             }
-        });
-        return
-    }
+        })
+    let tournament = await Tournament.findById(id);
+
+    tournament.level = level;
+    tournament.save();
 }
+
+
+async function createMatch(newMatch) {
+    await Match.create(newMatch, (err, User) => {
+        if (err) {
+            console.log(err);
+            res.end(err);
+        }
+        else {
+            console.log("Match created")
+        }
+    });
+    return
+}
+
 
 /* UPDATE match by Id*/
 module.exports.updateMatch = (req, res, next) => {
     let id = req.params.id
     updatedInfo = {
         "acive": false,
-        "winnerPhone": req.body.winnerPhone
+        "winner": req.body.winner
     }
     Match.findByIdAndUpdate(id, updatedInfo, (err) => {
         if (err) {
