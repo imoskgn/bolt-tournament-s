@@ -1,4 +1,4 @@
-let mongoose =  require('mongoose')
+let mongoose = require('mongoose')
 
 //create business contact model
 let tournamentModel = mongoose.Schema({
@@ -7,7 +7,6 @@ let tournamentModel = mongoose.Schema({
     description: String,
     status: String,
     playersList: Array,
-    currentPlayersList: Array,
     startDate: Date,
     endDate: Date,
     level: Number

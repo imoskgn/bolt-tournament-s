@@ -1,7 +1,6 @@
 let express = require('express');
 let router = express.Router();
 let mongoose = require('mongoose');
-let User = require('../models/user');
 let Tournament = require('../models/tournament');
 
 
@@ -19,7 +18,7 @@ module.exports.displayTournamentList = (req, res, next) => {
 
 /* GET Tournament by Id */
 module.exports.displayTournament = (req, res, next) => {
-    let id = req.params.id 
+    let id = req.params.id
     Tournament.findById(id).exec((err, tournament) => {
         if (err) {
             return console.error(err);
@@ -40,57 +39,10 @@ module.exports.createNewTournament = (req, res, next) => {
         "startDate": req.body.startDate,
         "endDate": req.body.endDate,
         "playersList": req.body.players,
-        "currentPlayersList": req.body.players,
         "level": 1
     });
-
-    let playersList = req.body.players
-
-    playersList.forEach(async (player) => {
-        phoneNumber = player.phoneNumber;
-        await checkUser(phoneNumber, player)
-    });
-
-    /* Creating users if not exist in the database */
-    async function checkUser(phoneNumber, player){
-        User.find({ phoneNumber: phoneNumber }).exec((err, user) => {
-            if (err) {
-                return console.error(err);
-            }
-            else {
-                if (!user.length) {
-                    let newUser = User({
-                        "name": player.name,
-                        "phoneNumber": phoneNumber,
-                        "registered": false,
-                        "email": "",
-                        "registerAt": "1999-01-01",
-                        "password": ""
-                    })
-                    createUser(newUser).catch(e => {
-                        console.log('There has been a problem: ' + e.message);
-                      })
-                }
-            }
-        });
-    }
-
-    async function createUser(newUser){
-        await User.create(newUser, (err, User) => {
-            if (err) {
-                console.log(err);
-                res.end(err);
-            }
-            else {
-                console.log("User created")
-            }
-        });
-        return
-    }
-
-
     // Add new Tournament to the Database
-    Tournament.create(newTournament, (err, Order) => {
+    Tournament.create(newTournament, (err, Tournament) => {
         if (err) {
             console.log(err);
             res.end(err);
@@ -102,41 +54,36 @@ module.exports.createNewTournament = (req, res, next) => {
 }
 
 /* UPDATE Tournament by Id*/
-module.exports.updateTournament = (req, res, next) => {
+module.exports.updateTournament = async (req, res, next) => {
     let id = req.params.id
-    updatedInfo = {
-        "name": req.body.name,
-        "description": req.body.description,
-        "startDate": req.body.startDate,
-        "endDate": req.body.endDate,
-        "playersList": req.body.playersList
+    let tournament = await Tournament.findById(id)
+    if (!tournament) {
+        res.json(tournament);
     }
-
-    Tournament.findByIdAndUpdate(id, updatedInfo, (err) => {
-        if(err)
-        {
-            console.log(err);
-            res.json(err);
-        }
-        else
-        {
-            res.json({ success: true, msg: 'Tournament Successfully Updated' });
-        }
-    })
+    else if (tournament.status == "created") {
+        tournament.name = req.body.name,
+        tournament.description = req.body.description,
+        tournament.startDate = req.body.startDate,
+        tournament.endDate = req.body.endDate,
+        tournament.playersList = req.body.playersList,
+        tournament.status = req.body.status
+        tournament.save()
+        res.json({ status: true, msg: "Tournament succesfully updated" })
+    }
+    else {
+        res.json({ status: false, msg: "Tournament have already started can not be updated" })
+    }
 }
-
 
 
 /* Delete tournament by id */
 module.exports.deleteTournament = (req, res, next) => {
     let id = req.params.id;
-    Tournament.remove({_id: id}, (err) => {
-        if(err)
-        {
+    Tournament.remove({ _id: id }, (err) => {
+        if (err) {
             console.log(err)
         }
-        else
-        {
+        else {
             res.json({ success: true, msg: 'Tournament Successfully Deleted' });
         }
     })

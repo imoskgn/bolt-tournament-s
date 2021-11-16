@@ -13,8 +13,11 @@ router.get('/tournament/:id', matchControllers.displayMatchesByTournament);
 /* GET matche by id */
 router.get('/:id', matchControllers.displayMatch);
 
+/* CREATE first matches*/
+router.post('/create/first/:tournamentId', matchControllers.createMatchesPerTournament);
+
 /* CREATE matches*/
-router.post('/create/:id', matchControllers.createMatchesPerTournament);
+router.post('/create/:tournamentId', matchControllers.createOrUpdateMatch);
 
 /* UPDATE match */
 router.post('/update/:id', matchControllers.updateMatch);

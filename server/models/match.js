@@ -2,16 +2,26 @@ let mongoose =  require('mongoose')
 
 
 
-//create business contact model
+//create match model 
 let matchModel = mongoose.Schema({
-    firstPlayerPhone: String,
-    secondPlayerPhone: String,
-    winnerPhone: String,
+    firstPlayer: {
+        name: String,
+        phoneNumber: String
+    },
+    secondPlayer: {
+        name: String,
+        phoneNumber: String
+    },
+    winner: {
+        name: String,
+        phoneNumber: String
+    },
     acive: Boolean,
     tournamentId: String,
-    level: Number
+    level: Number,
+    order: Number
 }, {
     collection: "matches"
-})
+}, {strict: false})
 
 module.exports = mongoose.model('match', matchModel)
