@@ -1,90 +1,88 @@
-let express = require('express');
+let express = require("express");
+const bcrypt = require("bcrypt");
 let router = express.Router();
-let mongoose = require('mongoose');
-let User = require('../models/user');
-
+let mongoose = require("mongoose");
+let User = require("../models/user");
 
 /* GET User list */
 module.exports.displayUserList = (req, res, next) => {
-    User.find().exec((err, userList) => {
-        if (err) {
-            return console.error(err);
-        }
-        else {
-            res.json(userList);
-        }
-    });
+  User.find().exec((err, userList) => {
+    if (err) {
+      return console.error(err);
+    } else {
+      res.json(userList);
+    }
+  });
 };
 
 /* GET User by phoneNumber */
 module.exports.displayUser = (req, res, next) => {
-    let id = req.params.id 
-    User.find({ phoneNumber: id }).exec((err, user) => {
-        if (err) {
-            return console.error(err);
-        }
-        else {
-            res.json(user);
-        }
-    });
+  let id = req.params.id;
+  User.find({ phoneNumber: id }).exec((err, user) => {
+    if (err) {
+      return console.error(err);
+    } else {
+      res.json(user);
+    }
+  });
 };
 
 /* CREATE User */
-module.exports.createNewUser = (req, res, next) => {
+module.exports.createNewUser = async (req, res, next) => {
+  try {
+    const salt = await bcrypt.genSalt();
+    const hashedPassword = await bcrypt.hash(req.body.password, salt);
+    console.log(salt);
+    console.log(hashedPassword);
+
     let newUser = User({
-        "name": req.body.name,
-        "phoneNumber": req.body.phoneNumber,
-        "registered": false,
-        "email": "",
-        "registerAt": "1999-01-01",
-        "password": ""
+      name: req.body.name,
+      phoneNumber: req.body.phoneNumber,
+      email: "",
+      registerAt: "1999-01-01",
+      password: hashedPassword,
     });
 
     // Add new User to the Database
     User.create(newUser, (err, Order) => {
-        if (err) {
-            console.log(err);
-            res.end(err);
-        }
-        else {
-            res.json({ success: true, msg: 'New User Successfully Created' });
-        }
+      if (err) {
+        console.log(err);
+        res.end(err);
+      } else {
+        res.json({ success: true, msg: "New User Successfully Created" , newUser : newUser  });
+        res.status(201).send()
+      }
     });
-}
+  } catch {
+     res.status(500).send()
+  }
+};
 
 /* UPDATE User by Id*/
 module.exports.updateUser = (req, res, next) => {
-    let id = req.params.id
-    updatedInfo = {
-        "name": req.body.name
+  let id = req.params.id;
+  updatedInfo = {
+    name: req.body.name,
+  };
+
+  User.findByIdAndUpdate(id, updatedInfo, (err) => {
+    if (err) {
+      console.log(err);
+      res.json(err);
+    } else {
+      res.json({ success: true, msg: "User Successfully Updated" });
     }
-
-    User.findByIdAndUpdate(id, updatedInfo, (err) => {
-        if(err)
-        {
-            console.log(err);
-            res.json(err);
-        }
-        else
-        {
-            res.json({ success: true, msg: 'User Successfully Updated' });
-        }
-    })
-}
-
-
+  });
+};
 
 /* Delete user by id */
 module.exports.deleteUser = (req, res, next) => {
-    let id = req.params.id;
-    User.remove({_id: id}, (err) => {
-        if(err)
-        {
-            console.log(err)
-        }
-        else
-        {
-            res.json({ success: true, msg: 'User Successfully Deleted' });
-        }
-    })
-}
+  let id = req.params.id;
+  User.remove({ _id: id }, (err) => {
+    if (err) {
+      console.log(err);
+    } else {
+      res.json({ success: true, msg: "User Successfully Deleted" });
+    }
+  });
+};

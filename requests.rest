@@ -1,0 +1,19 @@
+GET http://localhost:3000/tournament/
+
+
+###
+
+GET http://localhost:3000/user/
+
+
+###
+
+POST http://localhost:3000/user/create
+Content-Type: application/json
+
+{
+    "name" : "Afzal",
+    "password" : "password",
+    "phoneNumber" : "12345678",
+   
+}

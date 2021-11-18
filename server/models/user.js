@@ -10,7 +10,6 @@ let User = mongoose.Schema(
         require: "phone number is require",
         unique: true
     },
-    registered: Boolean,
     email: String,
     createdAt: {
         type: Date,

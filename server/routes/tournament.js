@@ -2,6 +2,8 @@
 let express = require('express');
 let router = express.Router();
 let tournamentControllers = require('../controllers/tournaments')
+const requiresAuth = require('../middleWare/authMiddleware')
+
 
 
 /* GET tournament list */
@@ -11,7 +13,7 @@ router.get('/', tournamentControllers.displayTournamentList);
 router.get('/:id', tournamentControllers.displayTournament);
 
 /* CREATE tournament*/
-router.post('/create', tournamentControllers.createNewTournament);
+router.post('/create' , tournamentControllers.createNewTournament);
 
 /* UPDATE tournament */
 router.post('/update/:id', tournamentControllers.updateTournament);
