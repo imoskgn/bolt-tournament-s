@@ -5,6 +5,7 @@ let mongoose = require("mongoose");
 let User = require("../models/user");
 const { json } = require("express");
 const { use } = require("../routes/user");
+const jwt = require('jsonwebtoken')
 
 /* GET User list */
 module.exports.displayUserList = (req, res, next) => {
@@ -31,7 +32,7 @@ module.exports.displayUser = (req, res, next) => {
 
 /* CREATE User */
 module.exports.createNewUser = async (req, res, next) => {
-  let user = findUserByPhone(req.body.phoneNumber);
+  let user = await findUserByPhone(req.body.phoneNumber);
 
   if (user !== null) {
     //   if phone number exists
@@ -111,14 +112,22 @@ module.exports.loginUser = async (req, res, next) => {
     req.body.phoneNumber != undefined
   ) {
     let user = await findUserByPhone(req.body.phoneNumber);
-    console.log(user);
+    // console.log(user);
     if (user == null) {
-      return res.status(400).send({ success: false, msg: "User does not exist" });
+      return res
+        .status(400)
+        .send({ success: false, msg: "User does not exist" });
     } else {
       try {
         console.log(await bcrypt.compare(req.body.password, user.password));
         if (await bcrypt.compare(req.body.password, user.password)) {
-          res.send("success");
+          const accessToken = jwt.sign(user.toJSON(), process.env.ACCESS_TOKEN_SECRET);
+
+          res.json({
+            success: true,
+            userInfo: user,
+            accessToken: accessToken,
+          });
         } else {
           res.send("not allowed");
         }
