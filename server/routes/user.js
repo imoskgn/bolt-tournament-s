@@ -20,7 +20,7 @@ router.post('/update/:id', userControllers.updateUser);
 router.delete('/delete/:id', userControllers.deleteUser);
 
 
-// LOGIN LOGOUT 
+// LOGIN 
 router.post('/login', userControllers.loginUser);
 
 
