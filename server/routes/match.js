@@ -17,7 +17,7 @@ router.get('/:id', matchControllers.displayMatch);
 router.post('/create/first/:tournamentId', matchControllers.createMatchesPerTournament);
 
 /* CREATE matches*/
-router.post('/create/:tournamentId', matchControllers.createOrUpdateMatch);
+router.post('/create/:tournamentId', matchControllers.updateMatch);
 
 /* UPDATE match */
 router.post('/update/:id', matchControllers.updateMatch);

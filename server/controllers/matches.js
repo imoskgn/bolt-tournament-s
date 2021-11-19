@@ -21,7 +21,7 @@ module.exports.displayMatches = (req, res, next) => {
 /* GET match by Tournament Id */
 module.exports.displayMatchesByTournament = (req, res, next) => {
     let id = req.params.id;
-    Match.find({ tournamentId: id }).sort({level: 1, order: 1}).exec((err, matchList) => {
+    Match.find({ tournamentId: id }).sort({ level: 1, order: 1 }).exec((err, matchList) => {
         if (err) {
             return console.error(err);
         }
@@ -52,8 +52,8 @@ module.exports.createMatchesPerTournament = (req, res, next) => {
         if (!tournament) {
             return res.json({ success: false, msg: 'Tournament with id: ' + id + "not found" });
         }
-        if (tournament.status != "created"){
-            return res.json({ succres: false, msg: "Tournament have already started"})
+        if (tournament.status != "created") {
+            return res.json({ succres: false, msg: "Tournament have already started" })
         }
         if (err) {
             return console.error(err);
@@ -75,14 +75,51 @@ module.exports.createMatchesPerTournament = (req, res, next) => {
                 order++;
             }
         }
+
         tournament.status = "started";
         tournament.save();
+        createEmptyMatches(id)
         return res.json({ success: true, msg: 'Matches Succesfully Created & Tournament Started' });
     })
 }
 
+async function createMatch(newMatch) {
+    await Match.create(newMatch, (err, User) => {
+        if (err) {
+            console.log(err);
+            res.end(err);
+        }
+        else {
+            console.log("Match created")
+        }
+    });
+    return
+}
 
-module.exports.createOrUpdateMatch = async (req, res, next) => {
+async function createEmptyMatches(id) {
+    console.log("holaaaaaa")
+    let orders = 2
+    for (let level = 2; level < 4; level++) {
+        for (let order = 1; order <= orders; order++) {
+            let newMatch = Match({
+                "firstPlayer": "",
+                "secondPlayer": "",
+                "winnerPhone": "",
+                "acive": true,
+                "tournamentId": id,
+                "level": level,
+                "order": order
+            });
+            console.log("calling create match")
+            await createMatch(newMatch)
+        }
+        orders = orders / 2;
+    }
+}
+
+
+
+module.exports.updateMatch = async (req, res, next) => {
     let id = req.params.tournamentId;
     let order = req.body.order
     let level = req.body.level
@@ -101,7 +138,7 @@ module.exports.createOrUpdateMatch = async (req, res, next) => {
             tournamentId: id,
             level: level,
             order: order
-        }, newMatch, {upsert: true}, (err, match) => {
+        }, newMatch, (err, match) => {
             if (err) {
                 return console.error(err);
             }
@@ -115,19 +152,6 @@ module.exports.createOrUpdateMatch = async (req, res, next) => {
     tournament.save();
 }
 
-
-async function createMatch(newMatch) {
-    await Match.create(newMatch, (err, User) => {
-        if (err) {
-            console.log(err);
-            res.end(err);
-        }
-        else {
-            console.log("Match created")
-        }
-    });
-    return
-}
 
 
 /* UPDATE match by Id*/
