@@ -20,6 +20,11 @@ router.post('/update/:id', userControllers.updateUser);
 router.delete('/delete/:id', userControllers.deleteUser);
 
 
+// LOGIN LOGOUT 
+router.post('/login', userControllers.loginUser);
+
+
+
 
 
 module.exports = router;

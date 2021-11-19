@@ -17,3 +17,15 @@ Content-Type: application/json
     "phoneNumber" : "12345678",
    
 }
+
+###
+
+POST http://localhost:3000/user/login
+Content-Type: application/json
+
+{
+    "name" : "Afzal",
+    "password" : "password",
+    "phoneNumber" : "12345678",
+   
+}
