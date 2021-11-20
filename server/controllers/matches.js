@@ -5,6 +5,7 @@ let mongoose = require('mongoose');
 let Match = require('../models/match');
 let Tournament = require('../models/tournament')
 let User = require('../models/user')
+const lodash = require('lodash');
 
 /* GET match list */
 module.exports.displayMatches = (req, res, next) => {
@@ -26,7 +27,12 @@ module.exports.displayMatchesByTournament = (req, res, next) => {
             return console.error(err);
         }
         else {
-            res.json(matchList);
+            matchList = lodash.chain(matchList)
+            // Group the elements of Array based on `color` property
+            .groupBy("level").values()
+            // `key` is group's name (color), `value` is the array of objects
+            
+            res.status(200).json(matchList);
         }
     });
 };
@@ -65,7 +71,7 @@ module.exports.createMatchesPerTournament = (req, res, next) => {
                 let newMatch = Match({
                     "firstPlayer": playersList[i],
                     "secondPlayer": playersList[i + 1],
-                    "winnerPhone": "",
+                    "winner": "",
                     "acive": true,
                     "tournamentId": tournament._id,
                     "level": tournament.level,
@@ -97,20 +103,18 @@ async function createMatch(newMatch) {
 }
 
 async function createEmptyMatches(id) {
-    console.log("holaaaaaa")
     let orders = 2
     for (let level = 2; level < 4; level++) {
         for (let order = 1; order <= orders; order++) {
             let newMatch = Match({
                 "firstPlayer": "",
                 "secondPlayer": "",
-                "winnerPhone": "",
+                "winner": "",
                 "acive": true,
                 "tournamentId": id,
                 "level": level,
                 "order": order
             });
-            console.log("calling create match")
             await createMatch(newMatch)
         }
         orders = orders / 2;
@@ -119,7 +123,7 @@ async function createEmptyMatches(id) {
 
 
 
-module.exports.updateMatch = async (req, res, next) => {
+module.exports.updateMatchByTournamentId = async (req, res, next) => {
     let id = req.params.tournamentId;
     let order = req.body.order
     let level = req.body.level
@@ -132,7 +136,6 @@ module.exports.updateMatch = async (req, res, next) => {
         "level": level,
         "order": order
     };
-    console.log(req.body.secondPlayerPhone ? req.body.secondPlayerPhone : "",)
     Match.findOneAndUpdate(
         {
             tournamentId: id,
