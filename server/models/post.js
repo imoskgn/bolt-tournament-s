@@ -15,10 +15,16 @@ const postSchema = new mongoose.Schema({
      type: Date,
      default: Date.now
     },
-  comments: [{
-     type: mongoose.Schema.Types.ObjectId,
-     ref: 'Comment'
-   }]
+    authorId : {
+      type : String,
+      required : true
+    },
+    authorName : {
+      type:String,
+      required : true
+    }
+  
+    
    })
 
    postSchema.virtual('url').get(function(){

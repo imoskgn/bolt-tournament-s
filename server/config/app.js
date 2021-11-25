@@ -22,6 +22,7 @@ mongoDB.once('open', ()=>{
 var tournamentRouter = require('../routes/tournament');
 var matchRouter = require('../routes/match')
 var userRouter = require('../routes/user')
+var forumRouter = require('../routes/forum')
 
 
 var app = express();
@@ -42,6 +43,7 @@ app.use(cors());
 app.use('/tournament', tournamentRouter);
 app.use('/match', matchRouter)
 app.use('/user', userRouter)
+app.use('/forum', forumRouter)
 
 
 

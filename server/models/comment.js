@@ -10,10 +10,15 @@ const mongoose = require('mongoose');
               type: Date,
               default: Date.now
            },
-        post: {
-              type: mongoose.Schema.Types.ObjectId,
-              ref: 'Post'
-           }
+        postID : String, // --- parent post id
+        authorId : {
+         type : String,
+         required : true
+       },
+       authorName : {
+         type:String,
+         required : true
+       }
          })
 
         module.exports = mongoose.model('Comment', commentSchema);
