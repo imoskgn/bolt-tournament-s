@@ -32,12 +32,12 @@ router.get('/comment/:id',forumController.displayComment );
 router.get('/comment-by-post/:id',forumController.displayCommentsByPost );
 
 /* CREATE comment*/
-router.post('/comment-on-post/:postId' ,requiresAuth,forumController.createCommentsOnPost );
+router.post('/comment/create/:postId' ,requiresAuth,forumController.createCommentsOnPost );
 
 /* UPDATE comment */
 router.post('/comment/update/:id',requiresAuth, forumController.updateComment);
 
 /* DELETE comment */
-router.delete('/comment/delete/:id',requiresAuth );
+router.delete('/comment/delete/:id',requiresAuth ,forumController.deleteComment);
 
 module.exports = router;

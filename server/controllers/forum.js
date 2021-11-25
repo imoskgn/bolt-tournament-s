@@ -125,6 +125,7 @@ module.exports.displayComment = (req, res, next) => {
 
 /* UPDATE comment by Id*/
 module.exports.updateComment = (req, res, next) => {
+    console.log(req.params.id)
     let id = req.params.id
     updatedInfo = {
        "text" : req.body.text
@@ -173,15 +174,17 @@ module.exports.createCommentsOnPost = async (req, res, next) => {
     })
 }
 
-async function createComment(newComment) {
-    await Comment.create(newComment, (err, User) => {
+
+/* Delete tournament by id */
+module.exports.deleteComment = (req, res, next) => {
+    let id = req.params.id;
+    Comment.remove({ _id: id }, (err) => {
         if (err) {
-            console.log(err);
-            res.end(err);
+            console.log(err)
         }
         else {
-            console.log("Comment created")
+            res.json({ success: true, msg: 'Comment Successfully Deleted' });
         }
-    });
-    return
+    })
 }
+
