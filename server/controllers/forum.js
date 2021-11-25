@@ -121,18 +121,6 @@ module.exports.displayComment = (req, res, next) => {
 };
 
 
-async function createComment(newComment) {
-    await Comment.create(newComment, (err, User) => {
-        if (err) {
-            console.log(err);
-            res.end(err);
-        }
-        else {
-            console.log("Comment created")
-        }
-    });
-    return
-}
 
 
 /* UPDATE comment by Id*/
@@ -152,3 +140,48 @@ module.exports.updateComment = (req, res, next) => {
     })
 }
 
+
+
+/* CREATE comments on a post  */
+module.exports.createCommentsOnPost = async (req, res, next) => {
+    let id = req.params.postId;
+    Post.findById(id, (err, post) => {
+        if (!post) {
+            return res.json({ success: false, msg: 'Post with id: ' + id + "not found" });
+        }
+        if (err) {
+            return console.error(err);
+        } else {
+             //    create comment here
+             let newComment = Comment({
+                "text" : req.body.text,
+                "postId" : req.params.postId,
+                "authorId": req.user._id ,
+                "authorName": req.user.name,
+            });
+
+            Comment.create(newComment, (err, User) => {
+                if (err) {
+                    console.log(err);
+                    res.end(err);
+                }
+                else {
+                    return res.json({ success: true, msg: 'Comments Succesfully Created' });
+                }
+            })
+        }
+    })
+}
+
+async function createComment(newComment) {
+    await Comment.create(newComment, (err, User) => {
+        if (err) {
+            console.log(err);
+            res.end(err);
+        }
+        else {
+            console.log("Comment created")
+        }
+    });
+    return
+}

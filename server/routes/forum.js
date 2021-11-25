@@ -32,7 +32,7 @@ router.get('/comment/:id',forumController.displayComment );
 router.get('/comment-by-post/:id',forumController.displayCommentsByPost );
 
 /* CREATE comment*/
-router.post('/comment/create' ,requiresAuth, );
+router.post('/comment-on-post/:postId' ,requiresAuth,forumController.createCommentsOnPost );
 
 /* UPDATE comment */
 router.post('/comment/update/:id',requiresAuth, forumController.updateComment);
