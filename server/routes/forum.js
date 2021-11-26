@@ -9,8 +9,11 @@ const requiresAuth = require('../middleWare/authMiddleware')
 /* GET post list */
 router.get('/post', forumController.displayPostList); 
 
-/* GET torunament by id */
+/* GET post by id */
 router.get('/post/:id',forumController.displayPostById );
+
+// GET posts by tournament
+router.get('/post/by-tournament/:id',forumController.displayPostsByTournament);
 
 /* CREATE post*/
 router.post('/post/create' ,requiresAuth, forumController.createNewPost );

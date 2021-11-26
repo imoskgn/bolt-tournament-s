@@ -22,8 +22,15 @@ const postSchema = new mongoose.Schema({
     authorName : {
       type:String,
       required : true
-    }
-  
+    },
+    authorPhone : {
+      type : String,
+      required : true
+   },
+  tournamentId : {
+    type : String,
+    required : false,
+  }
     
    })
 

@@ -54,7 +54,7 @@ module.exports.displayMatch = (req, res, next) => {
 module.exports.createMatchesPerTournament = (req, res, next) => {
     let id = req.params.tournamentId;
     Tournament.findById(id, (err, tournament) => {
-        console.log(tournament)
+        // console.log(tournament)
         if (!tournament) {
             return res.json({ success: false, msg: 'Tournament with id: ' + id + "not found" });
         }

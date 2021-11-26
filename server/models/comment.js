@@ -17,12 +17,16 @@ const commentSchema = new mongoose.Schema({
   },
   authorId: {
     type: String,
-    required: true,
+    required: false,
   },
   authorName: {
     type: String,
     required: true,
   },
+  authorPhone : {
+     type : String,
+     required : true
+  }
 });
 
 module.exports = mongoose.model("Comment", commentSchema);

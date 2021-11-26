@@ -33,13 +33,16 @@ module.exports.displayPostById = (req, res, next) => {
 
 /* CREATE Post */
 module.exports.createNewPost = (req, res, next) => {
-
+   
     let newPost = Post({
         "title": req.body.title,
         "text" : req.body.text,
+        "tournamentId" : req.body.tournamentId || "",
         "authorId" : req.user._id,
         "authorName" : req.user.name,
+        "authorPhone":req.user.phoneNumber,
     });
+    console.log(newPost)
     // Add new Post to the Database
     Post.create(newPost, (err, Post) => {
         if (err) {
@@ -81,6 +84,21 @@ module.exports.deletePost = (req, res, next) => {
     })
 }
 
+
+/* GET Post by Tournament Id */
+module.exports.displayPostsByTournament = (req, res, next) => {
+    console.log("displayPostsByTournament")
+    let id = req.params.id;
+    Post.find({ tournamentId: id }).sort({ level: 1, order: 1 }).exec((err, postList) => {
+        if (err) {
+            return console.error(err);
+        }
+        else {
+            postList = lodash.chain(postList).groupBy("level").values()
+            res.status(200).json(postList);
+        }
+    });
+};
 
 
 
@@ -125,7 +143,7 @@ module.exports.displayComment = (req, res, next) => {
 
 /* UPDATE comment by Id*/
 module.exports.updateComment = (req, res, next) => {
-    console.log(req.params.id)
+    // console.log(req.params.id)
     let id = req.params.id
     updatedInfo = {
        "text" : req.body.text
@@ -159,6 +177,7 @@ module.exports.createCommentsOnPost = async (req, res, next) => {
                 "postId" : req.params.postId,
                 "authorId": req.user._id ,
                 "authorName": req.user.name,
+                "authorPhone": req.user.phoneNumber,
             });
 
             Comment.create(newComment, (err, User) => {
