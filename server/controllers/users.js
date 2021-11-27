@@ -107,7 +107,7 @@ module.exports.deleteUser = (req, res, next) => {
 module.exports.loginUser = async (req, res, next) => {
   // console.log(req.body.name, req.body.password, req.body.phoneNumber);
   if (
-    req.body.name != undefined &&
+    // req.body.name != undefined &&
     req.body.password != undefined &&
     req.body.phoneNumber != undefined
   ) {
