@@ -1,7 +1,8 @@
 
 let express = require('express');
 let router = express.Router();
-let matchControllers = require('../controllers/matches')
+let matchControllers = require('../controllers/matches');
+const requiresAuth = require('../middleWare/authMiddleware');
 
 
 /* GET matches */

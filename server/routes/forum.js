@@ -16,13 +16,13 @@ router.get('/post/:id',forumController.displayPostById );
 router.get('/post/by-tournament/:id',forumController.displayPostsByTournament);
 
 /* CREATE post*/
-router.post('/post/create' ,requiresAuth, forumController.createNewPost );
+router.post('/post/create' , forumController.createNewPost );
 
 /* UPDATE post */
-router.post('/post/update/:id',requiresAuth, forumController.updatePost);
+router.post('/post/update/:id', forumController.updatePost);
 
 /* DELETE post */
-router.delete('/post/delete/:id',requiresAuth,forumController.deletePost );
+router.delete('/post/delete/:id',forumController.deletePost );
 
 
 
@@ -35,12 +35,12 @@ router.get('/comment/:id',forumController.displayComment );
 router.get('/comment-by-post/:id',forumController.displayCommentsByPost );
 
 /* CREATE comment*/
-router.post('/comment/create/:postId' ,requiresAuth,forumController.createCommentsOnPost );
+router.post('/comment/create/:postId' ,forumController.createCommentsOnPost );
 
 /* UPDATE comment */
-router.post('/comment/update/:id',requiresAuth, forumController.updateComment);
+router.post('/comment/update/:id', forumController.updateComment);
 
 /* DELETE comment */
-router.delete('/comment/delete/:id',requiresAuth ,forumController.deleteComment);
+router.delete('/comment/delete/:id' ,forumController.deleteComment);
 
 module.exports = router;

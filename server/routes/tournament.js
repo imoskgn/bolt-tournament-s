@@ -13,12 +13,12 @@ router.get('/', tournamentControllers.displayTournamentList);
 router.get('/:id', tournamentControllers.displayTournament);
 
 /* CREATE tournament*/
-router.post('/create' ,requiresAuth, tournamentControllers.createNewTournament);
+router.post('/create' , tournamentControllers.createNewTournament);
 
 /* UPDATE tournament */
-router.post('/update/:id',requiresAuth, tournamentControllers.updateTournament);
+router.post('/update/:id', tournamentControllers.updateTournament);
 
 /* DELETE tournament */
-router.delete('/delete/:id',requiresAuth, tournamentControllers.deleteTournament);
+router.delete('/delete/:id', tournamentControllers.deleteTournament);
 
 module.exports = router;
