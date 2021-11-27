@@ -7,7 +7,7 @@ let User = mongoose.Schema(
     phoneNumber: {
         type: String,
         trim: true,
-        require: "phone number is require",
+        require: "phone number is required",
         unique: true
     },
     email: String,
