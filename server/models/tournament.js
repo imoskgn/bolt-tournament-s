@@ -9,7 +9,8 @@ let tournamentModel = mongoose.Schema({
     playersList: Array,
     startDate: Date,
     endDate: Date,
-    level: Number
+    level: Number,
+    userPhone : Number,
 }, {
     collection: "tournaments"
 })

@@ -31,9 +31,11 @@ module.exports.displayTournament = (req, res, next) => {
 
 /* CREATE Tournament */
 module.exports.createNewTournament = (req, res, next) => {
+    console.log(req.user)
     let newTournament = Tournament({
         "name": req.body.name,
-        "userId": "",
+        "userId": req.user._id,
+        "userPhone" : req.user.phoneNumber,
         "description": req.body.description,
         "status": "created",
         "startDate": req.body.startDate,
@@ -57,10 +59,13 @@ module.exports.createNewTournament = (req, res, next) => {
 module.exports.updateTournament = async (req, res, next) => {
     let id = req.params.id
     let tournament = await Tournament.findById(id)
+
+  
+
     if (!tournament) {
         res.json(tournament);
     }
-    else if (tournament.status == "created") {
+    else if ((tournament.status == "created") && (req.user_id == tournament.userId)) {
         tournament.name = req.body.name,
         tournament.description = req.body.description,
         tournament.startDate = req.body.startDate,
@@ -70,8 +75,13 @@ module.exports.updateTournament = async (req, res, next) => {
         tournament.save()
         res.json({ status: true, msg: "Tournament succesfully updated" })
     }
-    else {
+    else if (req.user_id != tournament.userId) {
+        res.json({ status: false, msg: "You don't have authorization to make this change" })
+    }
+    else if (tournament.status == "started") {
         res.json({ status: false, msg: "Tournament have already started can not be updated" })
+    } else {
+        res.json({ status: false, msg: "" })
     }
 }
 

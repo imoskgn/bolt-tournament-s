@@ -54,7 +54,7 @@ module.exports.displayMatch = (req, res, next) => {
 module.exports.createMatchesPerTournament = (req, res, next) => {
     let id = req.params.tournamentId;
     Tournament.findById(id, (err, tournament) => {
-        // console.log(tournament)
+        console.log("CREATE matches when the tournament start" ,tournament)
         if (!tournament) {
             return res.json({ success: false, msg: 'Tournament with id: ' + id + "not found" });
         }
@@ -64,7 +64,7 @@ module.exports.createMatchesPerTournament = (req, res, next) => {
         if (err) {
             return console.error(err);
         }
-        else {
+        else if (tournament.userId == req.user._id){
             playersList = tournament.playersList
             let order = 1;
             for (let i = 0; i < (playersList.length - 1); i = i + 2) {
@@ -80,6 +80,8 @@ module.exports.createMatchesPerTournament = (req, res, next) => {
                 createMatch(newMatch)
                 order++;
             }
+        } else {
+            return res.json({ success: false, msg: 'Only the owner of the tournament can make changes here' });
         }
 
         tournament.status = "started";
@@ -127,6 +129,7 @@ module.exports.updateMatchByTournamentId = async (req, res, next) => {
     let id = req.params.tournamentId;
     let order = req.body.order
     let level = req.body.level
+    let tournament = await Tournament.findById(id);
     let newMatch = {
         "firstPlayer": req.body.firstPlayer ? req.body.firstPlayer : "",
         "secondPlayer": req.body.secondPlayer ? req.body.secondPlayer : "",
@@ -136,7 +139,8 @@ module.exports.updateMatchByTournamentId = async (req, res, next) => {
         "level": level,
         "order": order
     };
-    Match.findOneAndUpdate(
+    
+   if (tournament.userId == req.user._id){ Match.findOneAndUpdate(
         {
             tournamentId: id,
             level: level,
@@ -146,10 +150,11 @@ module.exports.updateMatchByTournamentId = async (req, res, next) => {
                 return console.error(err);
             }
             else {
-                res.json({ success: true, msg: 'Matches Succesfully Created' });
+                res.json({ success: true, msg: 'Matches Succesfully updated' });
             }
-        })
-    let tournament = await Tournament.findById(id);
+        })} else {
+            res.json({ success: true, msg: 'Only the owner of the tournament can make changes' });
+        }
 
     tournament.level = level;
     tournament.save();
