@@ -87,15 +87,26 @@ module.exports.updateTournament = async (req, res, next) => {
 
 
 /* Delete tournament by id */
-module.exports.deleteTournament = (req, res, next) => {
+module.exports.deleteTournament = async (req, res, next) => {
+
     let id = req.params.id;
-    Tournament.remove({ _id: id }, (err) => {
-        if (err) {
-            console.log(err)
-        }
-        else {
-            res.json({ success: true, msg: 'Tournament Successfully Deleted' });
-        }
-    })
+    let tournament = await Tournament.findById(id)
+
+   console.log("Tournament :", tournament)
+
+    if (tournament.userId == req.user._id){
+        Tournament.deleteOne({ _id: id }, (err) => {
+            if (err) {
+                console.log(err)
+            }
+            else {
+                res.json({ success: true, msg: 'Tournament Successfully Deleted' });
+            }
+        })
+    } else {
+        res.json({success : false, msg:'you are not authorized to make this change'});
+    }
+
+   
 }
 
