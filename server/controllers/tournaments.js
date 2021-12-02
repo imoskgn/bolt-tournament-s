@@ -31,7 +31,7 @@ module.exports.displayTournament = (req, res, next) => {
 
 /* CREATE Tournament */
 module.exports.createNewTournament = (req, res, next) => {
-    console.log(req.user)
+    console.log(req.user.name)
     let newTournament = Tournament({
         "name": req.body.name,
         "userId": req.user._id,
@@ -65,7 +65,7 @@ module.exports.updateTournament = async (req, res, next) => {
     if (!tournament) {
         res.json(tournament);
     }
-    else if ((tournament.status == "created") && (req.user_id == tournament.userId)) {
+    else if ((tournament.status == "created") && (req.user._id == tournament.userId)) {
         tournament.name = req.body.name,
         tournament.description = req.body.description,
         tournament.startDate = req.body.startDate,
