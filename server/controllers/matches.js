@@ -77,7 +77,7 @@ module.exports.createMatchesPerTournament = (req, res, next) => {
                     "level": tournament.level,
                     "order": order
                 });
-                createMatch(newMatch)
+                await createMatch(newMatch)
                 order++;
             }
         } else {
@@ -86,7 +86,7 @@ module.exports.createMatchesPerTournament = (req, res, next) => {
 
         tournament.status = "started";
         tournament.save();
-        createEmptyMatches(id)
+        await createEmptyMatches(id)
         return res.json({ success: true, msg: 'Matches Succesfully Created & Tournament Started' });
     })
 }
