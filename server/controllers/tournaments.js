@@ -60,28 +60,24 @@ module.exports.updateTournament = async (req, res, next) => {
     let id = req.params.id
     let tournament = await Tournament.findById(id)
 
-  
 
     if (!tournament) {
         res.json(tournament);
     }
     else if ((tournament.status == "created") && (req.user._id == tournament.userId)) {
-        tournament.name = req.body.name,
-        tournament.description = req.body.description,
-        tournament.startDate = req.body.startDate,
-        tournament.endDate = req.body.endDate,
-        tournament.playersList = req.body.playersList,
-        tournament.status = req.body.status
+        tournament.name = req.body.name ? req.body.name : tournament.name,
+        tournament.description = req.body.description ? req.body.description : tournament.description,
+        tournament.startDate = req.body.startDate ? req.body.startDate : tournament.startDate,
+        tournament.endDate = req.body.endDate ? req.body.endDate : tournament.endDate,
+        tournament.playersList = req.body.playersList ? req.body.playersList : tournament.playersList,
+        tournament.status = req.body.status ? req.body.status : tournament.status ,
         tournament.save()
-        res.json({ status: true, msg: "Tournament succesfully updated" })
-    }
-    else if (req.user_id != tournament.userId) {
-        res.json({ status: false, msg: "You don't have authorization to make this change" })
+        res.json({ status: true, msg: "Tournament succesfully updated" , updatedTournament : tournament })
     }
     else if (tournament.status == "started") {
         res.json({ status: false, msg: "Tournament have already started can not be updated" })
     } else {
-        res.json({ status: false, msg: "" })
+        res.json({ status: false, msg: "",  updatedTournament : tournament})
     }
 }
 
